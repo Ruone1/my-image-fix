@@ -10,15 +10,15 @@ jobs:
       - name: 1. 拉取你的图片
         uses: actions/checkout@v4
 
-      - name: 2. 安装运行环境（Vulkan 驱动）
+      - name: 2. 安装运行环境（精简版）
         run: |
           sudo apt-get update
-          sudo apt-get install -y unzip libvulkan1 mesa-vulkan-drivers libgl1-mesa-glx
+          # 🌟 删掉了过时的 libgl1-mesa-glx，保留了核心的 Vulkan 驱动
+          sudo apt-get install -y unzip libvulkan1 mesa-vulkan-drivers
 
       - name: 3. 下载免安装修复引擎 (Linux版)
         run: |
           curl -L -o realesrgan.zip https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesrgan-ncnn-vulkan-20220424-ubuntu.zip
-          # 加上 -o 强制解压，不再询问
           unzip -o realesrgan.zip
           chmod +x realesrgan-ncnn-vulkan
 

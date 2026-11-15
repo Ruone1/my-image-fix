@@ -1,7 +1,7 @@
 name: 云端图片极速修复
 
 on:
-  workflow_dispatch: # 允许你手动点击运行
+  workflow_dispatch:
 
 jobs:
   fix:
@@ -13,19 +13,17 @@ jobs:
       - name: 2. 安装运行环境（Vulkan 驱动）
         run: |
           sudo apt-get update
-          sudo apt-get install -y unzip libvulkan1 mesa-vulkan-drivers
+          sudo apt-get install -y unzip libvulkan1 mesa-vulkan-drivers libgl1-mesa-glx
 
       - name: 3. 下载免安装修复引擎 (Linux版)
         run: |
-          # 直接从 GitHub 官方下载 Real-ESRGAN 的 C++ 免安装包
-          wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesrgan-ncnn-vulkan-20220424-ubuntu.zip
-          unzip realesrgan-ncnn-vulkan-20220424-ubuntu.zip
+          curl -L -o realesrgan.zip https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesrgan-ncnn-vulkan-20220424-ubuntu.zip
+          # 加上 -o 强制解压，不再询问
+          unzip -o realesrgan.zip
+          chmod +x realesrgan-ncnn-vulkan
 
       - name: 4. 执行修复
         run: |
-          # 给引擎赋予执行权限
-          chmod +x realesrgan-ncnn-vulkan
-          # 运行修复：-i 输入文件，-o 输出文件，-n 模型，-s 放大倍数
           ./realesrgan-ncnn-vulkan -i input.jpg -o output_hd.png -n realesrgan-x4plus -s 4
 
       - name: 5. 打包上传修复好的图片

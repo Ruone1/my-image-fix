@@ -13,7 +13,6 @@ jobs:
       - name: 2. 安装运行环境（精简版）
         run: |
           sudo apt-get update
-          # 🌟 删掉了过时的 libgl1-mesa-glx，保留了核心的 Vulkan 驱动
           sudo apt-get install -y unzip libvulkan1 mesa-vulkan-drivers
 
       - name: 3. 下载免安装修复引擎 (Linux版)
@@ -21,10 +20,14 @@ jobs:
           curl -L -o realesrgan.zip https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesrgan-ncnn-vulkan-20220424-ubuntu.zip
           unzip -o realesrgan.zip
           chmod +x realesrgan-ncnn-vulkan
+          
+          # 🛡️ 防呆机制：把官方自带的测试图全删了，看你还能覆盖谁！
+          rm -f input.jpg input2.jpg
 
       - name: 4. 执行修复
         run: |
-          ./realesrgan-ncnn-vulkan -i input.jpg -o output_hd.png -n realesrgan-x4plus -s 4
+          # 🌟 这里改为你真实的图片名
+          ./realesrgan-ncnn-vulkan -i my_photo.jpg -o output_hd.png -n realesrgan-x4plus -s 4
 
       - name: 5. 打包上传修复好的图片
         uses: actions/upload-artifact@v4
